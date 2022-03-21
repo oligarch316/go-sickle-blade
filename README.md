@@ -1,3 +1,3 @@
-# Golang Sickle Plugins
+# Golang Sickle Plugin Library
 
 TODO

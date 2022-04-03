@@ -1,19 +1,23 @@
 package blade
 
-import "net/url"
-
-type ItemType struct{ val string }
-
-var (
-	ItemTypeInvalid    = ItemType{""}
-	ItemTypeCollection = ItemType{"collection"}
-	ItemTypeMedia      = ItemType{"media"}
+import (
+	"context"
+	"io"
+	"net/url"
 )
 
-func (it ItemType) String() string {
-	switch it {
-	case ItemTypeCollection, ItemTypeMedia:
-		return it.val
+type ItemClass struct{ val string }
+
+var (
+	ItemClassInvalid    = ItemClass{""}
+	ItemClassCollection = ItemClass{"collection"}
+	ItemClassMedia      = ItemClass{"media"}
+)
+
+func (ic ItemClass) String() string {
+	switch ic {
+	case ItemClassCollection, ItemClassMedia:
+		return ic.val
 	}
 	return "invalid"
 }
@@ -22,16 +26,16 @@ type Item interface{ Fingerprint() ([]byte, error) }
 
 type ClassifiedItem interface {
 	Item
-	URL() (*url.URL, error)
-	Type() ItemType
+	Class() ItemClass
+	NormalURL() (*url.URL, error)
 }
 
 type CollectionItem interface {
 	Item
-	TODOCollection()
+	ChildURLs(context.Context) ([]*url.URL, error)
 }
 
 type MediaItem interface {
 	Item
-	TODOMedia()
+	Data(context.Context) (io.ReadCloser, error)
 }
